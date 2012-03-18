@@ -17,15 +17,23 @@ Copyright (C) Jean Zundel <jzu@free.fr> 2012
 
 Free software, licensed under the GNU GPL v3.
 
-COMPILATION
------------
+Compiling
+---------
 
-TODO (currently in the `.../src/plugins/` subdir of the ladspa-sdk package)
+You need the ladspa-sdk package. Then, type:
 
-RUNNING
+`make`
+
+`sudo make install`
+
+That's about it. You can now use the plugin.
+
+Running
 -------
 
 Once the `despiker_4741.so` library has been copied to `/usr/lib/ladspa/`, 
-enter Audacity and load a problematic audio track. Go to *Effects > Despiker*.
+enter Audacity and load a problematic audio track. Go to 
+*Effects > Modules... > Despiker*.
+
 Done.
 

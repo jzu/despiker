@@ -1,2 +1,2 @@
-- Make it clean: make a Makefile
 - Port to Macintosh and Windows
+- Adjust the convolution matrix and treshold level?
