@@ -1,0 +1,31 @@
+Despiker
+========
+
+Version 0.1
+
+Removes crackles provoked by signal spikes, for example snare overloads, by
+selectively applying a low-pass filter to half-waves reaching a given treshold
+using a convolution matrix - leaving other parts untouched.  This audio plugin
+can be used with any LADSPA host, such as Audacity.
+
+No miracle here. If a long period of audio signal is saturated, it will always
+sound saturated. However, the crackles and pops created by spikes, which are
+actually high-level harmonics due to plateauing waves, will locally disappear, 
+leaving a (hopefully) more audible track.
+
+Copyright (C) Jean Zundel <jzu@free.fr> 2012
+
+Free software, licensed under the GNU GPL v3.
+
+COMPILATION
+-----------
+
+TODO (currently in the `.../src/plugins/` subdir of the ladspa-sdk package)
+
+RUNNING
+-------
+
+Once the `despiker_4741.so` library has been copied to `/usr/lib/ladspa/`, 
+enter Audacity and load a problematic audio track. Go to *Effects > Despiker*.
+Done.
+
