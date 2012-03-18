@@ -31,13 +31,24 @@
 #include "ladspa.h"
 
 
-#define AMP_INPUT1  0
-#define AMP_OUTPUT1 1
-
 typedef struct {
   LADSPA_Data * m_pfInputBuffer1;
   LADSPA_Data * m_pfOutputBuffer1;
 } Despiker;
+
+#define DESPIKER_INPUT1  0
+#define DESPIKER_OUTPUT1 1
+
+
+/* Yeuch */
+
+#ifdef WIN32
+#define _WINDOWS_DLL_EXPORT_ __declspec(dllexport)
+int bIsFirstTime = 1; 
+void _init(); // forward declaration
+#else
+#define _WINDOWS_DLL_EXPORT_ 
+#endif
 
 
 /* Plugin-specific defines */
@@ -74,8 +85,8 @@ void convolve (LADSPA_Data  *in,          // Input buffer
   LADSPA_Data sum;
 
   if ((start - HLF_CNVL < 0) ||           // Fast, clean, cheap: if the very
-      (stop + HLF_CNVL + 1 > smplcnt))    // first/last samples are clipping,
-    for (i = start ; i < stop ; i++)      // zero out this half-wave
+      (stop + HLF_CNVL + 1 > smplcnt))    // first/last samples of the track
+    for (i = start ; i < stop ; i++)      // are clipping, zero out this part
       out [i] = 0;
   else
     for (i = start; i < stop ; i++) {
@@ -149,10 +160,10 @@ void connectPortToDespiker (LADSPA_Handle Instance,
 
   psDespiker = (Despiker *) Instance;
   switch (Port) {
-    case AMP_INPUT1:
+    case DESPIKER_INPUT1:
       psDespiker->m_pfInputBuffer1 = DataLocation;
       break;
-    case AMP_OUTPUT1:
+    case DESPIKER_OUTPUT1:
       psDespiker->m_pfOutputBuffer1 = DataLocation;
       break;
   }
@@ -196,22 +207,22 @@ void _init() {
       = (LADSPA_PortDescriptor *) calloc (2, sizeof (LADSPA_PortDescriptor));
     g_psDespikerDescr->PortDescriptors
       = (const LADSPA_PortDescriptor *) piPortDescriptors;
-    piPortDescriptors[AMP_INPUT1]
+    piPortDescriptors [DESPIKER_INPUT1]
       = LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO;
-    piPortDescriptors[AMP_OUTPUT1]
+    piPortDescriptors [DESPIKER_OUTPUT1]
       = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO;
     pcPortNames
       = (char **) calloc (2, sizeof(char *));
     g_psDespikerDescr->PortNames 
       = (const char **) pcPortNames;
-    pcPortNames [AMP_INPUT1]  = strdup ("Input");
-    pcPortNames [AMP_OUTPUT1] = strdup ("Output");
+    pcPortNames [DESPIKER_INPUT1]  = strdup ("Input");
+    pcPortNames [DESPIKER_OUTPUT1] = strdup ("Output");
     psPortRangeHints 
       = ((LADSPA_PortRangeHint *) calloc (2, sizeof (LADSPA_PortRangeHint)));
     g_psDespikerDescr->PortRangeHints
       = (const LADSPA_PortRangeHint *) psPortRangeHints;
-    psPortRangeHints [AMP_INPUT1].HintDescriptor  = 0;
-    psPortRangeHints [AMP_OUTPUT1].HintDescriptor = 0;
+    psPortRangeHints [DESPIKER_INPUT1].HintDescriptor  = 0;
+    psPortRangeHints [DESPIKER_OUTPUT1].HintDescriptor = 0;
     g_psDespikerDescr->instantiate  = instantiateDespiker;
     g_psDespikerDescr->connect_port = connectPortToDespiker;
     g_psDespikerDescr->activate     = NULL;
@@ -252,7 +263,15 @@ void _fini() {
 
 /*****************************************************************************/
 
-const LADSPA_Descriptor * ladspa_descriptor (unsigned long Index) {
+_WINDOWS_DLL_EXPORT_
+const LADSPA_Descriptor *ladspa_descriptor (unsigned long Index) {
+
+#ifdef WIN32
+  if (bIsFirstTime) {
+    _init();
+    bIsFirstTime = 0;
+  }
+#endif
 
   if (Index == 0)
     return g_psDespikerDescr;
