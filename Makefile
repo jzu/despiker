@@ -8,7 +8,7 @@ CC        = /usr/bin/cc
 LD        = /usr/bin/ld
 INSTALL   = install -m 644
 
-${PLUGIN}.so:
+${PLUGIN}.so: ${PLUGIN}.c
 	$(CC) $(CFLAGS) -o ${PLUGIN}.o -c ${PLUGIN}.c
 	$(LD) -g -o ${PLUGIN}.so ${PLUGIN}.o -shared ${LIBRARIES}
 
@@ -18,4 +18,5 @@ install: ${PLUGIN}.so
 clean:
 	-rm -f *.o *.so *~ core*
 
-
+deinstall:
+	-rm -f $(INSTALL_PLUGINS_DIR)${PLUGIN}.so
