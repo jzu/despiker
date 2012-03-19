@@ -13,6 +13,10 @@ sound saturated. However, the crackles and pops created by spikes, which are
 actually high-level harmonics due to plateauing waves, will locally disappear, 
 leaving a (hopefully) more audible track.
 
+Values for the treshold and the convolution matrix have been chosen by ear.
+If you feel you have better ideas (and you can hear the difference), or if the
+plugin doesn't work as it should, just send me an email.
+
 Copyright (C) Jean Zundel <jzu@free.fr> 2012
 
 Free software, licensed under the GNU GPL v3.
