@@ -17,6 +17,16 @@ Values for the treshold and the convolution matrix have been chosen by ear.
 If you feel you have better ideas (and you can hear the difference), or if the
 plugin doesn't work as it should, just send me an email.
 
+Additionally, this plugin also works as a very simple compressor on clean
+tracks. Random peaks often happen on live recordings, without any real relation
+to music dynamics. These peaks impair a straightforward normalization at 0dB, 
+and sometimes you have to manually attenuate them one by one.
+Running the Despiker plugin will level these unwanted spikes, usually giving
+the ability to amplify the whole track by 1dB. Repeating the process more than
+twice is not recommended since the low-pass filter would affect a lot more
+half-waves, losing more information than necessary. If you want to really
+compress the signal, use a real compressor.
+
 Copyright (C) Jean Zundel <jzu@free.fr> 2012
 
 Free software, licensed under the GNU GPL v3.
