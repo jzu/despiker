@@ -201,7 +201,7 @@ void _init() {
       = LADSPA_PROPERTY_HARD_RT_CAPABLE;
     g_psDespikerDescr->Name             = strdup ("Despiker");
     g_psDespikerDescr->Maker            = strdup ("Jean Zundel");
-    g_psDespikerDescr->Copyright        = strdup ("GPL v2");
+    g_psDespikerDescr->Copyright        = strdup ("GPL v3");
     g_psDespikerDescr->PortCount        = 2;
     piPortDescriptors
       = (LADSPA_PortDescriptor *) calloc (2, sizeof (LADSPA_PortDescriptor));
