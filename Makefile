@@ -1,20 +1,18 @@
-INSTALL_PLUGINS_DIR	=	/usr/lib/ladspa/
-INSTALL_INCLUDE_DIR	=	/usr/include/
-INSTALL_BINARY_DIR	=	/usr/bin/
+INSTALL_PLUGINS_DIR = /usr/lib/ladspa/
 
-INCLUDES	=	-I.
-LIBRARIES	=	-ldl -lm
-CFLAGS		=	$(INCLUDES) -Wall -g -fPIC
-CXXFLAGS	=	$(CFLAGS)
-PLUGIN		=	despiker_4741
-CC			=	cc
-INSTALL		=	install -m 644
+INCLUDES  = -I.
+LIBRARIES = -ldl -lm
+CFLAGS    = $(INCLUDES) -Wall -g -fPIC
+PLUGIN    = despiker_4741
+CC        = /usr/bin/cc
+LD        = /usr/bin/ld
+INSTALL   = install -m 644
 
 ${PLUGIN}.so:
 	$(CC) $(CFLAGS) -o ${PLUGIN}.o -c ${PLUGIN}.c
-	$(LD) -g -o ${PLUGIN}.so ${PLUGIN}.o -shared
+	$(LD) -g -o ${PLUGIN}.so ${PLUGIN}.o -shared ${LIBRARIES}
 
-install:	${PLUGIN}.so
+install: ${PLUGIN}.so
 	${INSTALL} ${PLUGIN}.so $(INSTALL_PLUGINS_DIR)
 
 clean:
