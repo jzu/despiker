@@ -34,7 +34,8 @@ Free software, licensed under the GNU GPL v3.
 Compiling
 ---------
 
-You need the ladspa-sdk package. Then, type:
+The `ladspa.h` file, included in this project, comes from the ladspa-sdk package 
+and allows to compile the plugin without installing the whole package. Type:
 
 `make`
 
