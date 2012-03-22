@@ -9,9 +9,12 @@ using a convolution matrix - leaving other parts untouched.  This audio plugin
 can be used with any LADSPA host, such as Audacity.
 
 No miracle here. If a long period of audio signal is saturated, it will always
-sound saturated. However, the crackles and pops created by spikes, which are
-actually high-level harmonics due to brutally plateauing waves, will locally
-disappear, leaving a (hopefully) more audible track.
+sound saturated. "Mechanical" saturation, coming from the microphone itself, is
+another problem which usually cannot be solved by this plugin, because the
+perturbation frequency range is too wide. However, the crackles and pops
+created by digital spikes, which are actually high-level harmonics due to
+brutally plateauing waves, will locally disappear, leaving a (hopefully) more
+audible track.
 
 Values for the treshold and the convolution matrix have been chosen by ear.
 If you feel you have better ideas (and you can hear the difference), or if the
