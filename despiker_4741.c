@@ -54,16 +54,18 @@ void _init(); // forward declaration
 /* Plugin-specific defines */
 
 #define TRESHOLD 0.9
-#define HLF_CNVL 10
-#define LEN_CNVL (2*HLF_CNVL+1)        /* 21 */
+#define HLF_CNVL 20
+#define LEN_CNVL (2*HLF_CNVL+1)        /* 41 */
 
 
 /* Convolution matrix */
 
 LADSPA_Data matrix [LEN_CNVL] = {      /* Mean should be 1 */
-  0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 
-  8, 
-  1, 1, 1, 1, 1, 1, 0, 0, 0, 0 
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  0, 0, 0, 1, 1, 1, 2, 3, 4, 5,
+  7, 
+  5, 4, 3, 2, 1, 1, 1, 0, 0, 0,
+  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 };
 
 LADSPA_Data *cnvl = matrix + HLF_CNVL + 1;
