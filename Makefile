@@ -8,9 +8,21 @@ CC        = /usr/bin/cc
 LD        = /usr/bin/ld
 INSTALL   = install -m 644
 
+SYSTEM    = $(shell uname)
+
+ifeq (${SYSTEM},Linux)
+LDFLAGS   = -g -shared
+else
+ifeq (${SYSTEM},Darwin)
+LDFLAGS   = -dylib
+else
+LDFLAGS   = "NOT SUPPORTED"
+endif
+endif
+
 ${PLUGIN}.so: ${PLUGIN}.c
 	$(CC) $(CFLAGS) -o ${PLUGIN}.o -c ${PLUGIN}.c
-	$(LD) -g -o ${PLUGIN}.so ${PLUGIN}.o -shared ${LIBRARIES}
+	$(LD) -o ${PLUGIN}.so ${PLUGIN}.o ${LDFLAGS} ${LIBRARIES}
 
 install: ${PLUGIN}.so
 	${INSTALL} ${PLUGIN}.so $(INSTALL_PLUGINS_DIR)
