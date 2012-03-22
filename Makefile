@@ -14,7 +14,7 @@ ifeq (${SYSTEM},Linux)
 LDFLAGS   = -g -shared
 else
 ifeq (${SYSTEM},Darwin)
-LDFLAGS   = -dylib
+LDFLAGS   = -dylib     # Doesn't work yet
 else
 LDFLAGS   = "NOT SUPPORTED"
 endif
