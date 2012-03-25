@@ -11,18 +11,18 @@ INSTALL   = install -m 644
 SYSTEM    = $(shell uname)
 
 ifeq (${SYSTEM},Linux)
-LDFLAGS   = -g -shared
+LD = /usr/bin/ld -ldl -lm -g -shared
 else
 ifeq (${SYSTEM},Darwin)
-LDFLAGS   = -dylib     # Doesn't work yet
+LD = ${CC} -bundle -flat_namespace -undefined suppress
 else
-LDFLAGS   = "NOT SUPPORTED"
+LD = echo "NOT A SUPPORTED SYSTEM"
 endif
 endif
 
 ${PLUGIN}.so: ${PLUGIN}.c
 	$(CC) $(CFLAGS) -o ${PLUGIN}.o -c ${PLUGIN}.c
-	$(LD) -o ${PLUGIN}.so ${PLUGIN}.o ${LDFLAGS} ${LIBRARIES}
+	$(LD) -o ${PLUGIN}.so ${PLUGIN}.o 
 
 install: ${PLUGIN}.so
 	${INSTALL} ${PLUGIN}.so $(INSTALL_PLUGINS_DIR)
