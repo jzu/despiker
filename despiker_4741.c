@@ -55,24 +55,32 @@ void _init(); // forward declaration
 
 #define TRESHOLD 0.9
 #define HLF_CNVL 20
-#define LEN_CNVL (2*HLF_CNVL+1)        /* 41 */
+#define LEN_CNVL (2*HLF_CNVL+1)
 
 
 /* Convolution matrix */
 
-LADSPA_Data matrix [LEN_CNVL] = {      /* Mean should be 1 */
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  0, 0, 0, 1, 1, 1, 2, 3, 4, 5,
-  7, 
-  5, 4, 3, 2, 1, 1, 1, 0, 0, 0,
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+// If 16 surrounding points act on a given point, then the cutoff frequency
+// could well be something like 22050/8 = 2756 Hz. Perhaps. Slope is unknown.
+
+
+LADSPA_Data matrix [LEN_CNVL] = {                  // Mean should be 1 
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0, 0.5,   1, 1.5,   2, 2.5,   3, 3.5,   4,
+  5, 
+  4, 3.5,   3, 2.5,   2, 1.5,   1, 0.5,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0
 };
 
-LADSPA_Data *cnvl = matrix + HLF_CNVL + 1;
+LADSPA_Data *cnvl = matrix + HLF_CNVL + 1;         // Center ptr
 
 
 /*****************************************************************************
  * Apply a convolution matrix to all points in the marked area 
+ * Filtering varies with signal intensity: nothing at 0, the higher the harder
+ * hence:   out  =  in * (1 - in)  +  filtered * in
+ * Something seems horribly wrong with this "progressive" algorithm because
+ * inverse peaks towards 0 get created when running it several times in a row
  *****************************************************************************/
 
 void convolve (LADSPA_Data  *in,          // Input buffer
@@ -89,13 +97,13 @@ void convolve (LADSPA_Data  *in,          // Input buffer
   if ((start - HLF_CNVL < 0) ||           // Fast, clean, cheap: if the very
       (stop + HLF_CNVL + 1 > smplcnt))    // first/last samples of the track
     for (i = start ; i < stop ; i++)      // are clipping, zero out this part
-      out [i] = 0;
+      out [i] = 0;                        // Causes issues on small selections
   else
     for (i = start; i < stop ; i++) {
       sum = 0;
       for (c = -HLF_CNVL ; c <= HLF_CNVL; c++)
         sum += in [i+c] * cnvl [c];
-      out [i] = sum / LEN_CNVL;
+      out [i] = in [i] * (1 - fabs (in [i] - sum / LEN_CNVL));
     }
 }
 
