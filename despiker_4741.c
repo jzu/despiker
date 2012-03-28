@@ -78,9 +78,7 @@ LADSPA_Data *cnvl = matrix + HLF_CNVL + 1;         // Center ptr
 /*****************************************************************************
  * Apply a convolution matrix to all points in the marked area 
  * Filtering varies with signal intensity: nothing at 0, the higher the harder
- * hence:   out  =  in * (1 - in)  +  filtered * in
- * Something seems horribly wrong with this "progressive" algorithm because
- * inverse peaks towards 0 get created when running it several times in a row
+ * hence:   out  =  in * (1 - abs(in))  +  filtered * abs(in)
  *****************************************************************************/
 
 void convolve (LADSPA_Data  *in,          // Input buffer
@@ -103,7 +101,7 @@ void convolve (LADSPA_Data  *in,          // Input buffer
       sum = 0;
       for (c = -HLF_CNVL ; c <= HLF_CNVL; c++)
         sum += in [i+c] * cnvl [c];
-      out [i] = in [i] * (1 - fabs (in [i] - sum / LEN_CNVL));
+      out [i] = in [i] * (1 - fabs (in [i])) + sum/LEN_CNVL * fabs (in [i]);
     }
 }
 
