@@ -54,7 +54,7 @@ void _init(); // forward declaration
 /* Plugin-specific defines */
 
 #define TRESHOLD 0.9
-#define HLF_CNVL 20
+#define HLF_CNVL 8
 #define LEN_CNVL (2*HLF_CNVL+1)
 
 
@@ -65,20 +65,16 @@ void _init(); // forward declaration
 
 
 LADSPA_Data matrix [LEN_CNVL] = {                  // Mean should be 1 
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-  0,   0, 0.5,   1, 1.5,   2, 2.5,   3, 3.5,   4,
-  5, 
-  4, 3.5,   3, 2.5,   2, 1.5,   1, 0.5,   0,   0,
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0
+  0.2, 0.4, 0.6, 0.8,   1, 1.2, 1.4, 1.6,
+  2.6,
+  1.6, 1.4, 1.2,   1, 0.8, 0.6, 0.4, 0.2
 };
 
-LADSPA_Data *cnvl = matrix + HLF_CNVL + 1;         // Center ptr
+LADSPA_Data *cnvl = matrix + HLF_CNVL;             // Center pointer
 
 
 /*****************************************************************************
  * Apply a convolution matrix to all points in the marked area 
- * Filtering varies with signal intensity: nothing at 0, the higher the harder
- * hence:   out  =  in * (1 - abs(in))  +  filtered * abs(in)
  *****************************************************************************/
 
 void convolve (LADSPA_Data  *in,          // Input buffer
@@ -97,11 +93,11 @@ void convolve (LADSPA_Data  *in,          // Input buffer
     for (i = start ; i < stop ; i++)      // are clipping, zero out this part
       out [i] = 0;                        // Causes issues on small selections
   else
-    for (i = start; i < stop ; i++) {
+    for (i = start; i < stop ; i++) {     // Apply matrix
       sum = 0;
       for (c = -HLF_CNVL ; c <= HLF_CNVL; c++)
         sum += in [i+c] * cnvl [c];
-      out [i] = in [i] * (1 - fabs (in [i])) + sum/LEN_CNVL * fabs (in [i]);
+      out [i] = sum / LEN_CNVL;
     }
 }
 
